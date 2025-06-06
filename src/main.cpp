@@ -67,6 +67,13 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
+  int time = 0;
+  float xbaseline = Inertial.acceleration(xaxis);
+  float ybaseline = Inertial.acceleration(yaxis);
+  float zbaseline = Inertial.acceleration(zaxis);
+
+  //printf("%.2f\n%.2f\n%.2f\n", Inertial.acceleration(xaxis), ybaseline, zbaseline);
+  printf("time,accel\n");
   while (1) {
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
@@ -76,9 +83,18 @@ void usercontrol(void) {
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
     // ........................................................................
+    if (time == 20) {
+      xbaseline = Inertial.acceleration(xaxis);
+      ybaseline = Inertial.acceleration(yaxis);
+      zbaseline = Inertial.acceleration(zaxis);
+      //printf("%.2f\n%.2f\n%.2f\n", xbaseline, ybaseline, zbaseline);
+    }
 
-    float magnitude = sqrt(pow(Inertial.acceleration(xaxis), 2) + pow(Inertial.acceleration(yaxis), 2) + pow(Inertial.acceleration(zaxis), 2));
-    printf("%.2f\n", magnitude);
+    float magnitude = sqrt(pow(xbaseline-Inertial.acceleration(xaxis), 2) + pow(ybaseline-Inertial.acceleration(yaxis), 2) + pow(zbaseline-Inertial.acceleration(zaxis), 2));
+    printf("%d,%.2f\n", time, magnitude);
+    //printf("%.2f,%.2f,%.2f\n", xbaseline, ybaseline, zbaseline);
+    //printf("%.2f,%.2f,%.2f,\n\n", xbaseline-Inertial.acceleration(xaxis), ybaseline-Inertial.acceleration(yaxis), zbaseline-Inertial.acceleration(zaxis));
+    time += 20;
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
